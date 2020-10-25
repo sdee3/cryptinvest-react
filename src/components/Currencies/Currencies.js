@@ -1,39 +1,25 @@
-import React from "react";
+import React from 'react';
 
-export class Currencies extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      currencyValues: []
-    }
-  }
+export default function Currencies() {
+  const [currencyValues, setCurrencyValues] = React.useState([]);
 
-  componentWillMount() {
-    fetch("https://api.coinmarketcap.com/v1/ticker/?limit=10")
-      .then(results => {
-        return results.json();
-      }).then(data => {
-        let currencyValues = data.map((currencyValue) => {
-          return (
-            <li className="list-group-item" key={currencyValue.symbol}>
-              1 {currencyValue.name} ({currencyValue.symbol}) =  $ {currencyValue.price_usd}
-            </li>
-          )
-        });
-        this.setState({ currencyValues: currencyValues });
-        console.log("state", this.state.currencyValues);
-      })
-  }
+  React.useEffect(() => {
+    fetch('https://api.coinmarketcap.com/v1/ticker/?limit=10')
+      .then((results) => results.json())
+      .then((data) => {
+        const result = data.map((currencyValue) => (
+          <li className="list-group-item" key={currencyValue.symbol}>
+            1 {currencyValue.name} ({currencyValue.symbol}) = ${' '}
+            {currencyValue.price_usd}
+          </li>
+        ));
+        setCurrencyValues(result);
+      });
+  }, []);
 
-  render() {
-
-    return (
-      <div>
-        <ul className="list-group m-5">
-          {this.state.currencyValues}
-        </ul>
-      </div>
-
-    );
-  }
+  return (
+    <div>
+      <ul className="list-group m-5">{currencyValues}</ul>
+    </div>
+  );
 }
